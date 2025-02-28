@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ ."/../models/Todo.php";
+
 class Web2 {
   private $todo;
   public function __construct(){

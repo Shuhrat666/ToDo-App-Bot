@@ -4,10 +4,10 @@ class DB {
   public PDO $pdo;
 
   public function __construct(
-    public string $host     = 'localhost',
-    public string $database = 'todo_app',
-    public string $username = 'root',
-    public string $password = 'root'
+    public string $host,
+    public string $database,
+    public string $username,
+    public string $password,
   ){}
 
   public function connect(){

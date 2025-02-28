@@ -3,28 +3,28 @@ require_once __DIR__ . '/../models/Todo.php';
 
 $servername = "localhost";
 $username = "root";
-$password = "1234";
+$password = "\$Huhrat333";
 
 
 try {
-  $conn = new PDO("mysql:host=$servername;dbname=todo", $username, $password);
+  $conn = new PDO("mysql:host=$servername;dbname=todo_app", $username, $password);
   $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
 }
 $text = isset($_POST['new_task']) ? $_POST['new_task'] : null;
 if($text != null) {
-    $conn->query("INSERT INTO todos( task ) VALUES ('$text')");
+    $conn->query("INSERT INTO tasks( task ) VALUES ('$text')");
 }
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $stmt = $conn->prepare("UPDATE todos SET status = IF(status = true , false , true) WHERE id = $id");
+    $stmt = $conn->prepare("UPDATE tasks SET status = IF(status = true , false , true) WHERE id = $id");
     $stmt->execute();
     header("Location: /");
 }
 
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    $stmt = $conn->prepare("DELETE FROM todos WHERE id = $id");
+    $stmt = $conn->prepare("DELETE FROM tasks WHERE id = $id");
     $stmt->execute();
     header("Location: /");
 }

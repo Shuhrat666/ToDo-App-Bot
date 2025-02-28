@@ -1,5 +1,5 @@
 <?php
-require_once 'controllers/Web2.php';
+require_once __DIR__.'/../controllers/Web2.php';
 
 $todo = new Web2();
 
