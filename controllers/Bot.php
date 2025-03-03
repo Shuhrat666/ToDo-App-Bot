@@ -25,9 +25,16 @@ class Bot {
     $this->chatId    = $update->message->chat->id;
     $this->firstName = $update->message->chat->first_name;
 
+    $called_query=(new Todo())->getQuery();
+
     match($this->text){
       '/start' => $this->handleStartCommand(),
       '/list'  => $this->handleListCommand(),
+      '/add'   => $this->startAddCommand(),
+      'Done'   =>$this->handleStatus(true),
+      'Undone' => $this->handleStatus(false),
+      default  => $this->prepareCommand($this->text, $called_query),
+      
     };
   }
 
@@ -38,8 +45,7 @@ class Bot {
       $text .= "\n\n/list - Bor tasklar ro'yxati";
       $text .= "\n/add - Task qo'shish";
       $text .= "\n/delete - Taskni o'chirish";
-      $text .= "\n/done - Taskni bajarilgan qilib belgilash";
-      $text .= "\n/undone - Taskni bajarilmagan qilib belgilash";
+      $text .= "\n/update - Taskni bajarilgan qilib belgilash";
       
       $this->http->post('sendMessage', [
         'form_params' => [
@@ -48,6 +54,22 @@ class Bot {
         ]
       ]);
   }
+
+  // public function handleReply(){
+  //   $text = "Tasdiqlandi !";
+  //   $text .= "\n\n/list - Bor tasklar ro'yxati";
+  //   $text .= "\n/add - Task qo'shish";
+  //   $text .= "\n/delete - Taskni o'chirish";
+  //   $text .= "\n/done - Taskni bajarilgan qilib belgilash";
+  //   $text .= "\n/undone - Taskni bajarilmagan qilib belgilash";
+    
+  //   $this->http->post('sendMessage', [
+  //     'form_params' => [
+  //         'chat_id' => $this->chatId,
+  //         'text'    => $text
+  //     ]
+  //   ]);
+  // }
 
   public function handleListCommand(){
     $tasks = (new Todo())->getTasks();
@@ -77,4 +99,67 @@ class Bot {
       return $e->getMessage();
     }
   }
+
+  public function startAddCommand(){
+
+    $todo=new Todo();
+    $todo->setQuery("Yangi taskni kiriting :");
+
+    $this->http->post('sendMessage', [
+        'form_params' => [
+            'chat_id' => $this->chatId,
+            'text'    => "Yangi taskni kiriting :"
+        ]
+      ]);
+
+  }
+
+  public function handleAddCommand($task){
+    
+    $todo = new Todo();
+    $todo->addTask($task);
+
+    $this->http->post('sendMessage', [
+      'form_params' => [
+          'chat_id' => $this->chatId,
+          'text'    => "Task status ? :",
+          'reply_markup' => json_encode([
+          'keyboard' => [
+            [
+              ['text' => 'Done'],
+              ['text' => 'Undone'],
+            ]
+          ]
+        ])
+      ]
+    ]);
+  }
+  
+  public function handleStatus($status){
+    
+    $todo = new Todo();
+    $todo->addStatus($status);
+    
+    $text = "Tasdiqlandi !";
+    $text .= "\n\n/list - Bor tasklar ro'yxati";
+    $text .= "\n/add - Task qo'shish";
+    $text .= "\n/delete - Taskni o'chirish";
+    $text .= "\n/done - Taskni bajarilgan qilib belgilash";
+    $text .= "\n/undone - Taskni bajarilmagan qilib belgilash";
+    
+    $this->http->post('sendMessage', [
+      'form_params' => [
+          'chat_id' => $this->chatId,
+          'text'    => $text
+      ]
+    ]);
+  }
+
+  public function prepareCommand($given_task, $called_query) {
+    if ($given_task && $called_query === "Yangi taskni kiriting :") {
+
+        return $this->handleAddCommand($given_task);
+    }
+}
+
 }

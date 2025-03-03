@@ -18,9 +18,30 @@ class Todo {
     return $this->db->query("SELECT * FROM tasks")->fetchAll();
   }
 
-  public function addTask(string $task): bool {
+  public function setQuery(string $query):void {
+    $stmt = $this->db->prepare("UPDATE command SET query = :query;");
+    
+    $stmt->execute([':query' => $query]);
+  }
+
+  public function getQuery(): string {
+    return $this->db->query("SELECT query FROM command")->fetch(PDO::FETCH_ASSOC)["query"];
+  }
+
+  public function addTask(string $task): void {
     $stmt = $this->db->prepare("INSERT INTO tasks (task) VALUES (:task)");
     
-    return $stmt->execute([':task' => $task]);
+    $stmt->execute([':task' => $task]);
   }
+
+  public function addStatus(bool $status): void {
+    
+    $stmt = $this->db->query("SELECT MAX(id) AS max_id FROM tasks");
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $maxId = $result['max_id'];
+
+    $stmt = $this->db->prepare("UPDATE tasks SET status = :status WHERE id = :id");
+    $stmt->execute([':status' => (int)$status, ':id' => $maxId]);
+}
+
 }
