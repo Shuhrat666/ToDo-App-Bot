@@ -22,7 +22,7 @@ class DB {
 
       return $pdo;
     } catch(PDOException $e) {
-      file_put_contents('logs.txt', $e->getMessage(), FILE_APPEND);
+      file_put_contents('logs.txt', '\n'.$e->getMessage(), FILE_APPEND);
     }  
   }
 }

@@ -42,6 +42,6 @@ class Todo {
 
     $stmt = $this->db->prepare("UPDATE tasks SET status = :status WHERE id = :id");
     $stmt->execute([':status' => (int)$status, ':id' => $maxId]);
-}
+  }
 
 }

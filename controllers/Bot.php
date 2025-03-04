@@ -52,7 +52,7 @@ class Bot {
             'chat_id' => $this->chatId,
             'text'    => $text
         ]
-      ]);
+      ]); 
   }
 
   // public function handleReply(){
