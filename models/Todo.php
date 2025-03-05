@@ -28,10 +28,11 @@ class Todo {
     return $this->db->query("SELECT query FROM command")->fetch(PDO::FETCH_ASSOC)["query"];
   }
 
-  public function addTask(string $task): void {
+  public function addTask(string $task): array {
     $stmt = $this->db->prepare("INSERT INTO tasks (task) VALUES (:task)");
-    
     $stmt->execute([':task' => $task]);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public function addStatus(bool $status): void {
