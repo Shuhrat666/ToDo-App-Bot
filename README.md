@@ -13,6 +13,11 @@ composer install
 cp .env.example .env
 ```
 
+# Run mig31.php placed in migrations folder:
+```bash
+php mig31.php
+```
+
 # Run your local server port :
 ```bash
 php -S localhost:8000
