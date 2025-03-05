@@ -3,3 +3,4 @@ credentials.php
 .DS_Store
 .env
 logs.txt
+info.php
